@@ -8,9 +8,11 @@ node_modules/
 .env.*.local
 */.env
 
-# Uploads & user files
-uploads/
-*/uploads/
+# Uploads & user files (ignore dynamic user-submitted uploads, track sample demo photos)
+backend/uploads/file-*
+frontend/public/uploads/file-*
+uploads/file-*
+*/uploads/file-*
 
 # Build outputs
 .next/

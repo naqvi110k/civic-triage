@@ -5,7 +5,7 @@ const StatusHistory = require('../models/StatusHistory');
 const RuleSettings = require('../models/RuleSettings');
 const { SensitiveZone } = require('../models/SensitiveZone');
 const { auth, requireAdmin } = require('../middleware/auth');
-const { uploadEvidence } = require('../middleware/upload');
+const { uploadEvidence, getFileUrl } = require('../middleware/upload');
 const { calculatePriority } = require('../services/priority');
 
 const router = express.Router();
@@ -88,7 +88,7 @@ router.patch('/complaints/:id/status', uploadEvidence, async (req, res, next) =>
     if (department) complaint.department = department;
 
     const evidencePhotoUrl = req.file
-      ? `/uploads/${req.file.filename}`
+      ? getFileUrl(req.file)
       : (req.body.afterPhotoUrl || req.body.evidencePhotoUrl || null);
     if (evidencePhotoUrl) {
       complaint.resolvedEvidencePhotoUrl = evidencePhotoUrl;

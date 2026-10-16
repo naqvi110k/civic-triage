@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { Complaint } = require('../models/Complaint');
 const StatusHistory = require('../models/StatusHistory');
-const { uploadPhoto } = require('../middleware/upload');
+const { uploadPhoto, getFileUrl } = require('../middleware/upload');
 const { auth } = require('../middleware/auth');
 const { processComplaint } = require('../services/pipeline');
 const { calculatePriority } = require('../services/priority');
@@ -23,7 +23,7 @@ router.post('/analyze', uploadPhoto, async (req, res, next) => {
       return res.status(400).json({ error: 'Image file is required for AI visual analysis.' });
     }
 
-    const photoUrl = `/uploads/${req.file.filename}`;
+    const photoUrl = getFileUrl(req.file);
     const photoPath = req.file.path;
 
     // Run multimodal Gemini vision
@@ -81,7 +81,7 @@ router.post('/', auth(false), uploadPhoto, async (req, res, next) => {
       return res.status(400).json({ error: 'Valid latitude (-90 to 90) and longitude (-180 to 180) are required.' });
     }
 
-    const photoUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    const photoUrl = req.file ? getFileUrl(req.file) : (req.body.photoUrl || null);
     const resident = req.user ? req.user._id : null;
     const residentContact = {
       name: contactName || (req.user ? req.user.name : 'Anonymous Resident'),

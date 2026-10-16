@@ -62,8 +62,26 @@ const upload = multer({
   fileFilter,
 });
 
+function getFileUrl(file) {
+  if (!file) return null;
+  // If running on Vercel or explicitly configured, store as base64 data URI to persist in DB
+  if (process.env.VERCEL || process.env.STORAGE_MODE === 'base64') {
+    try {
+      const mime = file.mimetype || 'image/jpeg';
+      const fileBuffer = file.buffer || (file.path && fs.existsSync(file.path) ? fs.readFileSync(file.path) : null);
+      if (fileBuffer) {
+        return `data:${mime};base64,${fileBuffer.toString('base64')}`;
+      }
+    } catch (err) {
+      console.warn('[Upload] Failed to encode file to base64, falling back to path:', err.message);
+    }
+  }
+  return `/uploads/${file.filename}`;
+}
+
 module.exports = {
   upload,
   uploadPhoto: upload.single('photo'),
   uploadEvidence: upload.single('evidence'),
+  getFileUrl,
 };
