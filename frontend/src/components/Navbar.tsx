@@ -21,6 +21,7 @@ import {
   Mail,
   Info,
   ArrowUpRight,
+  Download,
 } from 'lucide-react';
 
 export function Navbar() {
@@ -264,6 +265,25 @@ export function Navbar() {
               </Link>
             );
           })}
+
+          {/* Quick Install Mobile App Link */}
+          <button
+            type="button"
+            onClick={() => {
+              setMobileMenuOpen(false);
+              window.dispatchEvent(new CustomEvent('civicpulse_open_pwa_install'));
+            }}
+            className="w-full flex items-center justify-between px-3 py-2.5 border border-dashed border-[var(--brand-primary)]/40 bg-[var(--brand-glow)] text-[var(--brand-primary)] text-xs font-medium hover:bg-[var(--brand-primary)]/15 transition-colors mt-2"
+          >
+            <div className="flex items-center gap-2.5">
+              <Download className="w-3.5 h-3.5" />
+              <span className="font-semibold">Install App on Phone</span>
+            </div>
+            <span className="font-mono text-[9px] uppercase tracking-wider font-bold px-1.5 py-0.5 bg-[var(--brand-primary)] text-white rounded-xs">
+              PWA
+            </span>
+          </button>
+
           <div className="pt-3 mt-2 border-t border-[var(--border-subtle)]">
             {mounted && isAuthenticated ? (
               <div className="p-3 bg-[var(--surface-elevated)] border border-[var(--border-subtle)] flex items-center justify-between">

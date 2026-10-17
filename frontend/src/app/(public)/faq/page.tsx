@@ -86,47 +86,47 @@ export default function HelpCenterPage() {
   };
 
   return (
-    <div className="min-h-screen py-14 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-10">
+    <div className="min-h-screen py-8 sm:py-14 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-6 sm:space-y-8 animate-fade-in">
       {/* Header */}
-      <div className="space-y-3 border-b border-[var(--border-subtle)] pb-8">
-        <div className="font-mono text-[11px] uppercase tracking-widest text-[var(--brand-primary)] font-semibold">
+      <div className="space-y-2 sm:space-y-3 border-b border-[var(--border-subtle)] pb-6 sm:pb-8">
+        <div className="font-mono text-[10px] sm:text-[11px] uppercase tracking-widest text-[var(--brand-primary)] font-semibold">
           MUNICIPAL KNOWLEDGE BASE // SC-01
         </div>
-        <h1 className="font-editorial text-4xl sm:text-5xl text-[var(--text-primary)] tracking-tight">
+        <h1 className="font-editorial text-3xl sm:text-4xl lg:text-5xl text-[var(--text-primary)] tracking-tight">
           Frequently Asked Questions
         </h1>
-        <p className="text-sm sm:text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed">
+        <p className="text-xs sm:text-sm md:text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed">
           Documentation covering automated category suggestions, deterministic priority scoring, spatial duplicate clustering, and field verification protocols.
         </p>
       </div>
 
       {/* Search Input */}
       <div className="relative">
-        <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-4 top-3.5" />
+        <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 sm:left-4 top-3.5" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search specifications by keyword (e.g. duplicate, 72 hours, priority score, after photo)..."
-          className="w-full pl-11 pr-4 py-3 bg-[var(--surface-card)] border border-[var(--border-strong)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-sm focus:outline-none focus:border-[var(--text-primary)] transition-colors"
+          placeholder="Search FAQs (e.g. duplicate, priority score, after photo)..."
+          className="w-full pl-10 sm:pl-11 pr-16 sm:pr-20 py-2.5 sm:py-3 bg-[var(--surface-card)] border border-[var(--border-strong)] text-[var(--text-primary)] placeholder-[var(--text-muted)] text-xs sm:text-sm focus:outline-none focus:border-[var(--text-primary)] transition-colors"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
-            className="absolute right-4 top-3.5 font-mono text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+            className="absolute right-3.5 top-3 sm:top-3.5 font-mono text-[11px] text-[var(--text-muted)] hover:text-[var(--text-primary)]"
           >
             CLEAR
           </button>
         )}
       </div>
 
-      {/* Category Filter Bar */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1">
+      {/* Category Filter Bar - Horizontal Scroll on Mobile with Edge-to-Edge bleed */}
+      <div className="-mx-4 px-4 sm:mx-0 sm:px-0 flex items-center gap-1.5 overflow-x-auto pb-1.5 no-scrollbar scroll-smooth">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat)}
-            className={`px-3.5 py-2 font-mono text-xs uppercase tracking-wider whitespace-nowrap border transition-colors ${
+            className={`px-3 py-1.5 sm:px-3.5 sm:py-2 font-mono text-[11px] sm:text-xs uppercase tracking-wider whitespace-nowrap border shrink-0 transition-colors ${
               selectedCategory === cat
                 ? 'bg-[var(--text-primary)] text-[var(--canvas-base)] border-[var(--text-primary)] font-semibold'
                 : 'bg-[var(--surface-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border-subtle)]'
@@ -138,7 +138,7 @@ export default function HelpCenterPage() {
       </div>
 
       {/* Searchable Accordion List */}
-      <div className="border border-[var(--border-subtle)] bg-[var(--surface-card)] divide-y divide-[var(--border-subtle)]">
+      <div className="border border-[var(--border-subtle)] bg-[var(--surface-card)] divide-y divide-[var(--border-subtle)] rounded-sm overflow-hidden">
         {filteredFaqs.length > 0 ? (
           filteredFaqs.map((faq) => {
             const isExpanded = expandedId === faq.id;
@@ -152,24 +152,24 @@ export default function HelpCenterPage() {
                 <button
                   type="button"
                   onClick={() => toggleAccordion(faq.id)}
-                  className="w-full p-5 sm:p-6 text-left flex items-start justify-between gap-4"
+                  className="w-full p-4 sm:p-6 text-left flex items-start justify-between gap-3 sm:gap-4"
                 >
-                  <div className="space-y-1">
-                    <span className="font-mono text-[10px] font-semibold text-[var(--brand-primary)] uppercase tracking-widest block">
+                  <div className="space-y-1 flex-1 min-w-0">
+                    <span className="font-mono text-[9px] sm:text-[10px] font-semibold text-[var(--brand-primary)] uppercase tracking-widest block">
                       {faq.category}
                     </span>
-                    <h3 className="text-sm sm:text-base font-semibold text-[var(--text-primary)]">
+                    <h3 className="text-xs sm:text-base font-semibold text-[var(--text-primary)] leading-snug">
                       {faq.question}
                     </h3>
                   </div>
 
-                  <div className="w-7 h-7 border border-[var(--border-subtle)] bg-[var(--surface-card)] flex items-center justify-center text-[var(--text-secondary)] shrink-0 mt-1">
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 border border-[var(--border-subtle)] bg-[var(--surface-card)] flex items-center justify-center text-[var(--text-secondary)] shrink-0 mt-0.5">
                     {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                   </div>
                 </button>
 
                 {isExpanded && (
-                  <div className="px-5 sm:px-6 pb-6 pt-3 border-t border-[var(--border-subtle)] text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                  <div className="px-4 sm:px-6 pb-5 sm:pb-6 pt-2 sm:pt-3 border-t border-[var(--border-subtle)] text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
                     {faq.answer}
                   </div>
                 )}
@@ -177,7 +177,7 @@ export default function HelpCenterPage() {
             );
           })
         ) : (
-          <div className="p-12 text-center space-y-2">
+          <div className="p-8 sm:p-12 text-center space-y-2">
             <HelpCircle className="w-6 h-6 text-[var(--text-muted)] mx-auto" />
             <h4 className="text-sm font-semibold text-[var(--text-primary)]">No Matching Questions Found</h4>
             <p className="text-xs text-[var(--text-muted)] max-w-sm mx-auto">
@@ -188,14 +188,14 @@ export default function HelpCenterPage() {
       </div>
 
       {/* Direct Assistance Callout */}
-      <div className="p-6 bg-[var(--surface-card)] border border-[var(--border-subtle)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs">
+      <div className="p-4 sm:p-6 bg-[var(--surface-card)] border border-[var(--border-subtle)] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 text-xs rounded-sm">
         <div>
-          <span className="font-semibold text-sm text-[var(--text-primary)] block">Need direct municipal assistance?</span>
-          <span className="text-[var(--text-secondary)]">Our public works operations desk is available during municipal hours.</span>
+          <span className="font-semibold text-xs sm:text-sm text-[var(--text-primary)] block">Need direct municipal assistance?</span>
+          <span className="text-[var(--text-secondary)] text-[11px] sm:text-xs">Our public works operations desk is available during municipal hours.</span>
         </div>
         <Link
           href="/contact"
-          className="inline-flex items-center gap-2 px-4 py-2.5 stitch-btn-accent font-mono text-xs uppercase tracking-wider font-semibold"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 stitch-btn-accent font-mono text-xs uppercase tracking-wider font-semibold shrink-0 w-full sm:w-auto text-center"
         >
           <span>Contact Directory</span>
           <ArrowRight className="w-3.5 h-3.5" />

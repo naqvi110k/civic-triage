@@ -260,3 +260,17 @@
   - Verified: `npm run build` and `npm run test:logic` pass with 0 errors.
   - *Status:* Completed & verified.
 
+- [x] **Task 10.11: Progressive Web App (PWA) & Mobile Responsiveness Hardening**
+  - Implemented full Progressive Web App capability: created `manifest.ts` metadata route, static `public/manifest.json`, offline fallback `public/offline.html`, and service worker `public/sw.js` with intelligent stale-while-revalidate caching and client claiming.
+  - Generated PWA icon suite (`icon-192x192.png`, `icon-512x512.png`, `icon-maskable-512x512.png`, `icon.svg`, `favicon.svg`, `apple-touch-icon.png`) using vector SVG telemetry graphics.
+  - Created `PwaManager.tsx` with native install prompt handler and guided iOS Safari "Add to Home Screen" instructions; added install shortcut to Navbar mobile drawer.
+  - Hardened mobile responsiveness across all non-responsive pages:
+    - **Admin Dashboard (`/admin`)**: added dedicated mobile card list view (`block md:hidden`) alongside desktop table (`hidden md:table`), responsive KPI strip, horizontal swipeable department/ward chips, and touch-friendly score tooltip popup.
+    - **FAQ Page (`/faq`)**: responsive typography, edge-to-edge swipeable category filter tabs, compact accordion spacing, and full-width mobile action callout.
+    - **Admin Rules (`/admin/rules`)**: stacked action buttons on mobile, non-sticky live simulator on small screens, and responsive weight sliders.
+    - **Spatial Map (`/admin/map`)**: horizontal scrollable priority filter chips and collapsible mobile GIS telemetry HUD legend.
+    - **Complaint Detail (`/admin/complaints/[id]`)**: responsive lifecycle stepper, stacked duplicate action buttons, and scrollable modal.
+  - Verified: `npm run build` passes with 20 static/partial prerender routes and `npm run test:logic` passes with 15/15 checks.
+  - *Status:* Completed & verified.
+
+

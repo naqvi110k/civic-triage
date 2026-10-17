@@ -109,17 +109,17 @@ export default function AdminRulesPage() {
   };
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
+    <div className="min-h-screen py-6 sm:py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6 sm:space-y-8 animate-fade-in">
       {/* Toast Notice */}
       {saveStatus && (
-        <div className="fixed top-20 right-6 z-50 p-4 rounded-sm bg-[var(--surface-card)] border border-[var(--border-strong)] text-[var(--text-primary)] text-xs font-mono font-semibold flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-[var(--status-resolved)]" />
-          <span>{saveStatus}</span>
+        <div className="fixed top-16 sm:top-20 right-4 left-4 sm:left-auto sm:right-6 z-50 p-3.5 sm:p-4 rounded-sm bg-[var(--surface-card)] border border-[var(--border-strong)] text-[var(--text-primary)] text-xs font-mono font-semibold flex items-center gap-2 shadow-2xl">
+          <CheckCircle2 className="w-4 h-4 text-[var(--status-resolved)] shrink-0" />
+          <span className="truncate">{saveStatus}</span>
         </div>
       )}
 
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-6">
         <div>
           <Link
             href="/admin"
@@ -128,24 +128,24 @@ export default function AdminRulesPage() {
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Admin Console</span>
           </Link>
-          <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="font-editorial text-4xl sm:text-5xl text-[var(--text-primary)] tracking-tight">
+          <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+            <h1 className="font-editorial text-2xl sm:text-4xl md:text-5xl text-[var(--text-primary)] tracking-tight">
               Dynamic Priority <span className="italic text-[var(--accent-primary)]">Scoring Rules.</span>
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-sm bg-[var(--accent-primary-subtle)] text-[var(--accent-primary)] border border-[var(--accent-primary-border)] font-mono font-bold">
+            <span className="text-[10px] sm:text-xs px-2.5 py-0.5 rounded-sm bg-[var(--accent-primary-subtle)] text-[var(--accent-primary)] border border-[var(--accent-primary-border)] font-mono font-bold">
               v2.4 Algorithmic Config
             </span>
           </div>
-          <p className="text-sm text-[var(--text-secondary)] mt-1">
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1 max-w-2xl">
             Tune weight allocations for municipal emergency classification, clustering thresholds, and automated field dispatch.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
           <button
             type="button"
             onClick={handleReset}
-            className="stitch-btn-secondary flex items-center gap-1.5 px-3.5 py-2.5 rounded-sm text-xs"
+            className="stitch-btn-secondary flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-sm text-xs w-full sm:w-auto"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset Defaults</span>
@@ -153,7 +153,7 @@ export default function AdminRulesPage() {
           <button
             type="button"
             onClick={handleSave}
-            className="stitch-btn-accent flex items-center gap-2 px-5 py-2.5 rounded-sm text-xs"
+            className="stitch-btn-accent flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm text-xs w-full sm:w-auto"
           >
             <Save className="w-4 h-4" />
             <span>Save & Recalibrate Active Queue</span>
@@ -161,12 +161,12 @@ export default function AdminRulesPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
         {/* Sliders Configuration Column (7 cols) */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-6">
+          <div className="p-4 sm:p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-6">
             <div className="pb-3 border-b border-[var(--border-subtle)]">
-              <h3 className="font-editorial text-2xl text-[var(--text-primary)] flex items-center gap-2">
+              <h3 className="font-editorial text-xl sm:text-2xl text-[var(--text-primary)] flex items-center gap-2">
                 <Sliders className="w-4 h-4 text-[var(--accent-primary)]" />
                 <span>Multi-Factor Mathematical Weight Sliders</span>
               </h3>
@@ -301,7 +301,7 @@ export default function AdminRulesPage() {
 
         {/* Live Reactive Simulator Column (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-5 sticky top-24 tabular-nums">
+          <div className="p-4 sm:p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-5 lg:sticky lg:top-24 tabular-nums">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
               <div className="flex items-center gap-2">
                 <div className="p-2 rounded-sm bg-[var(--accent-primary-subtle)] text-[var(--accent-primary)] border border-[var(--accent-primary-border)]">

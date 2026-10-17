@@ -120,11 +120,11 @@ export function SensitiveZoneManager({
   };
 
   return (
-    <div className="p-6 rounded-2xl glass-panel border border-[var(--border-subtle)] space-y-6">
+    <div className="p-4 sm:p-6 rounded-2xl glass-panel border border-[var(--border-subtle)] space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
-            <ShieldAlert className="w-5 h-5 text-amber-500" />
+          <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)] flex items-center gap-2">
+            <ShieldAlert className="w-5 h-5 text-amber-500 shrink-0" />
             <span>Sensitive Landmark Corridors</span>
           </h2>
           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
@@ -138,7 +138,7 @@ export function SensitiveZoneManager({
             setIsAdding(!isAdding);
             setError(null);
           }}
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-xs font-semibold transition-all self-start sm:self-auto"
+          className="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 text-xs font-semibold transition-all w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" />
           <span>{isAdding ? 'Cancel' : 'Add Sensitive Landmark'}</span>
@@ -158,11 +158,11 @@ export function SensitiveZoneManager({
           onSubmit={handleCreate}
           className="p-4 rounded-xl bg-[var(--surface-elevated)] border border-amber-500/30 space-y-4 animate-in fade-in"
         >
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
               New Sensitive Zone Calibration
             </span>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 flex-wrap">
               <span className="text-[11px] text-[var(--text-secondary)] mr-1">Presets:</span>
               {DEFAULT_PRESETS.map((p) => (
                 <button

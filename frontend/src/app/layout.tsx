@@ -3,6 +3,7 @@ import { Instrument_Serif, Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/g
 import './globals.css';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
+import { PwaManager } from '@/components/pwa/PwaManager';
 import { PersonaProvider } from '@/context/PersonaContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { Suspense } from 'react';
@@ -32,18 +33,43 @@ const jetbrainsMono = JetBrains_Mono({
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#FAF9F6' },
+    { media: '(prefers-color-scheme: dark)', color: '#0A0A0A' },
+  ],
 };
 
 export const metadata: Metadata = {
   title: 'CivicPulse — Municipal Infrastructure Triage & Dispatch Ledger',
   description:
     'Deterministic civic complaint triage system with spatial deduplication, auditable priority scoring, and verifiable field dispatch.',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'CivicPulse',
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
   keywords: [
     'CivicPulse',
     'Municipal Triage',
     'Public Works Dispatch',
     'Open311',
     'Civic Infrastructure',
+    'PWA',
   ],
   authors: [{ name: 'CivicPulse Municipal Systems' }],
 };
@@ -60,7 +86,13 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="CivicPulse" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('civicpulse_theme');if(t==='dark'){document.documentElement.classList.remove('light');document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');document.documentElement.classList.add('light');}}catch(e){}})();`,
@@ -92,6 +124,9 @@ export default function RootLayout({
             <Suspense fallback={null}>
               <Footer />
             </Suspense>
+
+            {/* Progressive Web App Manager & Install Prompt */}
+            <PwaManager />
           </PersonaProvider>
         </ThemeProvider>
       </body>

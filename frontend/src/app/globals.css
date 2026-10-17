@@ -387,3 +387,17 @@ html.light .leaflet-popup-tip {
   background-color: #FFFFFF !important;
 }
 
+/* Mobile utilities & scrollbar suppression */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Better mobile touch tap feedback */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+

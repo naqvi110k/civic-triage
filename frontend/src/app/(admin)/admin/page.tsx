@@ -160,26 +160,26 @@ export default function AdminDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
+    <div className="min-h-screen py-6 sm:py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6 sm:space-y-8 animate-fade-in">
       {/* Top Header & Navigation Switcher */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] text-[var(--accent-primary)] text-xs font-mono uppercase tracking-wider font-bold mb-2">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] text-[var(--accent-primary)] text-[11px] sm:text-xs font-mono uppercase tracking-wider font-bold mb-2">
             <Sliders className="w-3.5 h-3.5" />
             <span>Municipal Dispatch Command Center</span>
           </div>
-          <h1 className="font-editorial text-4xl sm:text-5xl text-[var(--text-primary)] tracking-tight">
+          <h1 className="font-editorial text-2xl sm:text-4xl md:text-5xl text-[var(--text-primary)] tracking-tight">
             High-Density Triage & <span className="italic text-[var(--accent-primary)]">Dispatch Console.</span>
           </h1>
-          <p className="text-sm text-[var(--text-secondary)] mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1 max-w-2xl leading-relaxed">
             Multi-modal incident queue, priority scoring telemetry, automated duplicate resolution, and departmental crew routing.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           <Link
             href="/admin/map"
-            className="stitch-btn-secondary flex items-center gap-2 px-4 py-2.5 rounded-sm text-xs"
+            className="stitch-btn-secondary flex items-center justify-center gap-2 px-4 py-2.5 rounded-sm text-xs w-full sm:w-auto"
           >
             <Compass className="w-4 h-4 text-[var(--accent-primary)]" />
             <span>Open Spatial Priority Map</span>
@@ -189,80 +189,80 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* 1. 4 Metric Summary KPI Strip (Exposed 1px Grid) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border border-[var(--border-subtle)] bg-[var(--surface-card)] divide-y sm:divide-y-0 sm:divide-x divide-[var(--border-subtle)] rounded-md overflow-hidden tabular-nums">
+      <div className="grid grid-cols-2 lg:grid-cols-4 border border-[var(--border-subtle)] bg-[var(--surface-card)] divide-y divide-x divide-[var(--border-subtle)] rounded-md overflow-hidden tabular-nums">
         {/* KPI 1 */}
-        <div className="p-5 flex flex-col justify-between">
+        <div className="p-3.5 sm:p-5 flex flex-col justify-between">
           <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
-            <span className="font-mono uppercase tracking-wider text-[11px]">Total Complaints</span>
-            <div className="p-1.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
-              <Layers className="w-4 h-4" />
+            <span className="font-mono uppercase tracking-wider text-[10px] sm:text-[11px]">Total Incidents</span>
+            <div className="p-1 sm:p-1.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
+              <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="font-editorial text-4xl text-[var(--text-primary)] mt-3" suppressHydrationWarning>
+          <div className="font-editorial text-2xl sm:text-4xl text-[var(--text-primary)] mt-2 sm:mt-3" suppressHydrationWarning>
             {kpis.total}
           </div>
-          <div className="text-xs font-mono text-[var(--status-resolved)] mt-2 flex items-center gap-1">
-            <span>Live Sync Across All Wards</span>
+          <div className="text-[10px] sm:text-xs font-mono text-[var(--status-resolved)] mt-1.5 sm:mt-2 flex items-center gap-1">
+            <span>Live Sync Across Wards</span>
           </div>
         </div>
 
         {/* KPI 2 */}
-        <div className="p-5 flex flex-col justify-between">
+        <div className="p-3.5 sm:p-5 flex flex-col justify-between">
           <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
-            <span className="font-mono uppercase tracking-wider text-[11px]">Pending Review</span>
-            <div className="p-1.5 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] text-[var(--accent-primary)]">
-              <AlertTriangle className="w-4 h-4" />
+            <span className="font-mono uppercase tracking-wider text-[10px] sm:text-[11px]">Pending Review</span>
+            <div className="p-1 sm:p-1.5 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] text-[var(--accent-primary)]">
+              <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="font-editorial text-4xl text-[var(--accent-primary)] mt-3" suppressHydrationWarning>
+          <div className="font-editorial text-2xl sm:text-4xl text-[var(--accent-primary)] mt-2 sm:mt-3" suppressHydrationWarning>
             {kpis.pendingReview}
           </div>
-          <div className="text-xs font-mono text-[var(--text-secondary)] mt-2 flex items-center justify-between gap-1">
-            <span>Requires Dispatcher Sign-off</span>
+          <div className="text-[10px] sm:text-xs font-mono text-[var(--text-secondary)] mt-1.5 sm:mt-2 flex items-center justify-between gap-1 flex-wrap">
+            <span>Requires Sign-off</span>
             {kpis.slaOverdueCount > 0 && (
-              <span className="px-1.5 py-0.5 rounded-sm bg-[var(--accent-primary-subtle)] text-[var(--accent-primary)] font-bold text-[10px]">
-                {kpis.slaOverdueCount} Overdue SLA
+              <span className="px-1.5 py-0.5 rounded-sm bg-[var(--accent-primary-subtle)] text-[var(--accent-primary)] font-bold text-[9px] sm:text-[10px]">
+                {kpis.slaOverdueCount} Overdue
               </span>
             )}
           </div>
         </div>
 
         {/* KPI 3 */}
-        <div className="p-5 flex flex-col justify-between">
+        <div className="p-3.5 sm:p-5 flex flex-col justify-between">
           <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
-            <span className="font-mono uppercase tracking-wider text-[11px]">Duplicate Merges</span>
-            <div className="p-1.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
-              <TrendingUp className="w-4 h-4" />
+            <span className="font-mono uppercase tracking-wider text-[10px] sm:text-[11px]">Duplicate Merges</span>
+            <div className="p-1 sm:p-1.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
+              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="font-editorial text-4xl text-[var(--text-primary)] mt-3" suppressHydrationWarning>
+          <div className="font-editorial text-2xl sm:text-4xl text-[var(--text-primary)] mt-2 sm:mt-3" suppressHydrationWarning>
             {kpis.totalDuplicates}
           </div>
-          <div className="text-xs font-mono text-[var(--text-secondary)] mt-2 flex items-center gap-1">
-            <span>Saved ~38 Crew Dispatch Hours</span>
+          <div className="text-[10px] sm:text-xs font-mono text-[var(--text-secondary)] mt-1.5 sm:mt-2 flex items-center gap-1">
+            <span>Saved ~38 Crew Hrs</span>
           </div>
         </div>
 
         {/* KPI 4 */}
-        <div className="p-5 flex flex-col justify-between">
+        <div className="p-3.5 sm:p-5 flex flex-col justify-between">
           <div className="flex items-center justify-between text-xs text-[var(--text-muted)]">
-            <span className="font-mono uppercase tracking-wider text-[11px]">Avg Resolution Time</span>
-            <div className="p-1.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
-              <Clock className="w-4 h-4" />
+            <span className="font-mono uppercase tracking-wider text-[10px] sm:text-[11px]">Avg Resolution</span>
+            <div className="p-1 sm:p-1.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)]">
+              <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
           </div>
-          <div className="font-editorial text-4xl text-[var(--text-primary)] mt-3" suppressHydrationWarning>
+          <div className="font-editorial text-2xl sm:text-4xl text-[var(--text-primary)] mt-2 sm:mt-3" suppressHydrationWarning>
             {kpis.avgResolution}
           </div>
-          <div className="text-xs font-mono text-[var(--status-resolved)] mt-2 flex items-center gap-1">
-            <span>-28% Under ISO 18091 SLA</span>
+          <div className="text-[10px] sm:text-xs font-mono text-[var(--status-resolved)] mt-1.5 sm:mt-2 flex items-center gap-1">
+            <span>Under ISO SLA</span>
           </div>
         </div>
       </div>
 
       {/* 2. Filter & Multi-Select Toolbar */}
-      <div className="p-5 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-4">
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
           {/* Search Box */}
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-3" />
@@ -270,8 +270,8 @@ export default function AdminDashboardPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by ticket reference (e.g. CP-2026-891), keyword, street address..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)]/60 text-xs focus:outline-none focus:border-[var(--accent-primary)] transition-colors"
+              placeholder="Search reference (CP-2026-891), address, keyword..."
+              className="w-full pl-10 pr-16 py-2.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-[var(--text-primary)] placeholder-[var(--text-muted)]/60 text-xs focus:outline-none focus:border-[var(--accent-primary)] transition-colors"
             />
             {searchQuery && (
               <button
@@ -284,16 +284,18 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Sort Control */}
-          <div className="flex items-center gap-2 self-start lg:self-auto shrink-0">
-            <ArrowUpDown className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-            <span className="text-xs font-mono uppercase text-[var(--text-muted)]">Sort By:</span>
+          <div className="flex items-center justify-between sm:justify-start gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 text-xs font-mono uppercase text-[var(--text-muted)]">
+              <ArrowUpDown className="w-3.5 h-3.5" />
+              <span>Sort:</span>
+            </div>
             <select
               value={sortBy}
               onChange={(e: any) => setSortBy(e.target.value)}
-              className="px-3 py-2 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)]"
+              className="flex-1 sm:flex-none px-3 py-2 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-primary)] font-mono"
             >
-              <option value="priority-desc">Priority Score (Highest first)</option>
-              <option value="priority-asc">Priority Score (Lowest first)</option>
+              <option value="priority-desc">Priority (Highest first)</option>
+              <option value="priority-asc">Priority (Lowest first)</option>
               <option value="age-desc">Newest First</option>
               <option value="age-asc">Oldest Pending</option>
               <option value="category">Category Alphabetical</option>
@@ -302,20 +304,20 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Multi-Select Pills for Ward and Department */}
-        <div className="pt-3 border-t border-[var(--border-subtle)] flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs">
+        <div className="pt-3 border-t border-[var(--border-subtle)] space-y-3 text-xs">
           {/* Department filter pills */}
-          <div className="space-y-1.5 flex-1">
-            <span className="text-[11px] font-mono font-semibold text-[var(--text-muted)] uppercase tracking-wider block">
+          <div className="space-y-1.5">
+            <span className="text-[10px] sm:text-[11px] font-mono font-semibold text-[var(--text-muted)] uppercase tracking-wider block">
               Filter by Department:
             </span>
-            <div className="flex items-center gap-1.5 flex-wrap">
+            <div className="-mx-4 px-4 sm:mx-0 sm:px-0 flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar flex-nowrap sm:flex-wrap">
               {allDepartments.map((dept) => {
                 const active = selectedDepartments.includes(dept);
                 return (
                   <button
                     key={dept}
                     onClick={() => toggleDepartment(dept)}
-                    className={`px-2.5 py-1 rounded-sm text-[11px] font-mono transition-all border ${
+                    className={`px-2.5 py-1 rounded-sm text-[10px] sm:text-[11px] font-mono transition-all border whitespace-nowrap shrink-0 ${
                       active
                         ? 'bg-[var(--text-primary)] text-[var(--canvas-base)] border-[var(--text-primary)] font-bold'
                         : 'bg-[var(--surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border-subtle)]'
@@ -329,11 +331,24 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Ward filter pills */}
-          <div className="space-y-1.5 shrink-0">
-            <span className="text-[11px] font-mono font-semibold text-[var(--text-muted)] uppercase tracking-wider block">
-              Filter by Ward:
-            </span>
-            <div className="flex items-center gap-1.5 flex-wrap">
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] sm:text-[11px] font-mono font-semibold text-[var(--text-muted)] uppercase tracking-wider block">
+                Filter by Ward:
+              </span>
+              {(selectedDepartments.length > 0 || selectedWards.length > 0) && (
+                <button
+                  onClick={() => {
+                    setSelectedDepartments([]);
+                    setSelectedWards([]);
+                  }}
+                  className="px-2 py-0.5 rounded-sm text-[10px] font-mono text-[var(--accent-primary)] hover:underline"
+                >
+                  Reset All Filters
+                </button>
+              )}
+            </div>
+            <div className="-mx-4 px-4 sm:mx-0 sm:px-0 flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar flex-nowrap sm:flex-wrap">
               {allWards.map((ward) => {
                 const active = selectedWards.includes(ward);
                 const shortWard = ward.split(' - ')[0];
@@ -341,7 +356,7 @@ export default function AdminDashboardPage() {
                   <button
                     key={ward}
                     onClick={() => toggleWard(ward)}
-                    className={`px-2.5 py-1 rounded-sm text-[11px] font-mono transition-all border ${
+                    className={`px-2.5 py-1 rounded-sm text-[10px] sm:text-[11px] font-mono transition-all border whitespace-nowrap shrink-0 ${
                       active
                         ? 'bg-[var(--accent-primary)] text-white border-[var(--accent-primary)] font-bold'
                         : 'bg-[var(--surface-elevated)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border-subtle)]'
@@ -352,39 +367,29 @@ export default function AdminDashboardPage() {
                   </button>
                 );
               })}
-              {(selectedDepartments.length > 0 || selectedWards.length > 0) && (
-                <button
-                  onClick={() => {
-                    setSelectedDepartments([]);
-                    setSelectedWards([]);
-                  }}
-                  className="px-2 py-1 rounded-sm text-[10px] font-mono text-[var(--accent-primary)] hover:underline ml-2"
-                >
-                  Reset Filters
-                </button>
-              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* 3. High-Density Triage Table */}
+      {/* 3. High-Density Triage Stream (Responsive Table on Desktop, Cards on Mobile) */}
       <div className="rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] overflow-hidden">
-        <div className="px-6 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--surface-secondary)]/50">
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-[var(--border-subtle)] flex flex-wrap items-center justify-between gap-2 bg-[var(--surface-secondary)]/50">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-bold text-[var(--text-primary)]">
+            <h3 className="text-xs sm:text-sm font-bold text-[var(--text-primary)]">
               Emergency Triage Stream ({filteredComplaints.length} tickets)
             </h3>
-            <span className="text-[11px] font-mono px-2 py-0.5 rounded-sm bg-[var(--surface-card)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">
+            <span className="text-[10px] sm:text-[11px] font-mono px-2 py-0.5 rounded-sm bg-[var(--surface-card)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">
               Live Queue
             </span>
           </div>
-          <span className="text-xs text-[var(--text-muted)] font-mono">
-            Updated via Real-Time Webhooks
+          <span className="text-[10px] sm:text-xs text-[var(--text-muted)] font-mono">
+            Real-Time Telemetry
           </span>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Desktop View: Full Table (md+) */}
+        <div className="overflow-x-auto hidden md:block">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="border-b border-[var(--border-subtle)] bg-[var(--surface-elevated)] text-[var(--text-muted)] uppercase tracking-wider font-mono font-semibold text-[10px]">
@@ -467,18 +472,20 @@ export default function AdminDashboardPage() {
                       {/* Column 6: Priority Pill with Breakdown Tooltip */}
                       <td className="py-3 px-4 tabular-nums">
                         <div className="relative inline-block">
-                          <div
+                          <button
+                            type="button"
+                            onClick={() => setActiveTooltipId(activeTooltipId === item.id ? null : item.id)}
                             onMouseEnter={() => setActiveTooltipId(item.id)}
                             onMouseLeave={() => setActiveTooltipId(null)}
                             className={`cursor-help px-2.5 py-1 rounded-sm border text-xs font-bold font-mono flex items-center gap-1.5 whitespace-nowrap ${pTheme.bg} ${pTheme.text} ${pTheme.border}`}
                           >
                             <span>{item.priorityScore}</span>
                             <Info className="w-3 h-3 opacity-60" />
-                          </div>
+                          </button>
 
                           {/* Mathematical Breakdown Hover Tooltip */}
                           {activeTooltipId === item.id && (
-                            <div className="absolute left-0 bottom-full mb-2 w-72 p-3.5 rounded-sm bg-[var(--surface-card)] border border-[var(--border-strong)] z-50 text-xs pointer-events-none">
+                            <div className="absolute left-0 bottom-full mb-2 w-72 p-3.5 rounded-sm bg-[var(--surface-card)] border border-[var(--border-strong)] z-50 text-xs shadow-xl pointer-events-none">
                               <div className="font-bold text-[var(--text-primary)] mb-1.5 flex items-center justify-between">
                                 <span>Priority Breakdown</span>
                                 <span className="font-mono text-[var(--accent-primary)] font-bold">{item.priorityScore} pts</span>
@@ -538,24 +545,159 @@ export default function AdminDashboardPage() {
           </table>
         </div>
 
+        {/* Mobile View: High-Efficiency Dispatch Cards (< md) */}
+        <div className="block md:hidden divide-y divide-[var(--border-subtle)]">
+          {filteredComplaints.length > 0 ? (
+            filteredComplaints.map((item) => {
+              const catTheme = CATEGORY_THEME[item.category] || CATEGORY_THEME['Road Damage'];
+              const pLevel = getPriorityLevel(item.priorityScore);
+              const pTheme = PRIORITY_THEME[pLevel];
+
+              return (
+                <div
+                  key={item.id}
+                  className="p-4 bg-[var(--surface-card)] hover:bg-[var(--surface-secondary)]/40 transition-colors space-y-3"
+                >
+                  {/* Row 1: ID, relative time & Inspect button */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/admin/complaints/${item.id}`}
+                        className="font-mono font-bold text-xs text-[var(--accent-primary)] hover:underline"
+                      >
+                        {item.id}
+                      </Link>
+                      <span className="text-[10px] text-[var(--text-muted)] font-mono" suppressHydrationWarning>
+                        {formatRelativeTime(item.createdAt)}
+                      </span>
+                    </div>
+
+                    <Link
+                      href={`/admin/complaints/${item.id}`}
+                      className="stitch-btn-secondary inline-flex items-center gap-1 px-2.5 py-1 rounded-sm text-[11px] font-mono"
+                    >
+                      <Eye className="w-3 h-3 text-[var(--accent-primary)]" />
+                      <span>Inspect</span>
+                    </Link>
+                  </div>
+
+                  {/* Row 2: Image & Title & Address */}
+                  <div className="flex items-start gap-3">
+                    <div className="w-14 h-14 rounded-sm overflow-hidden border border-[var(--border-subtle)] bg-[var(--surface-sunken)] shrink-0 relative">
+                      <img
+                        src={item.photoUrl}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-xs font-semibold text-[var(--text-primary)] leading-snug line-clamp-1">
+                        {item.title}
+                      </h4>
+                      <p className="text-[11px] text-[var(--text-secondary)] truncate mt-0.5" title={item.location.address}>
+                        {item.location.address}
+                      </p>
+                      <span className="text-[10px] font-mono text-[var(--text-muted)] mt-0.5 block">
+                        {item.ward || 'Municipal Ward 1'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Row 3: Badges Strip */}
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    <span
+                      className={`inline-block px-2 py-0.5 rounded-sm border text-[10px] font-mono font-semibold ${catTheme.bg} ${catTheme.text} ${catTheme.border}`}
+                    >
+                      {item.category}
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() => setActiveTooltipId(activeTooltipId === item.id ? null : item.id)}
+                      className={`px-2 py-0.5 rounded-sm border text-[10px] font-mono font-bold flex items-center gap-1 ${pTheme.bg} ${pTheme.text} ${pTheme.border}`}
+                    >
+                      <span>Priority {item.priorityScore}</span>
+                      <Info className="w-2.5 h-2.5 opacity-70" />
+                    </button>
+
+                    {item.duplicateCount > 0 && (
+                      <span className="px-2 py-0.5 rounded-sm bg-[var(--surface-elevated)] text-[var(--text-primary)] border border-[var(--border-subtle)] text-[10px] font-mono font-semibold">
+                        +{item.duplicateCount} dups
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Mobile Priority Breakdown Dropdown */}
+                  {activeTooltipId === item.id && (
+                    <div className="p-3 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-strong)] text-xs space-y-1.5 animate-fade-in">
+                      <div className="flex items-center justify-between font-bold text-[var(--text-primary)]">
+                        <span>Score Telemetry: {item.priorityScore} pts</span>
+                        <button
+                          onClick={() => setActiveTooltipId(null)}
+                          className="text-[10px] font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                        >
+                          CLOSE
+                        </button>
+                      </div>
+                      <div className="space-y-1 text-[11px] text-[var(--text-secondary)]">
+                        {item.priorityReasons.map((reason, idx) => (
+                          <div key={idx} className="flex items-start gap-1.5">
+                            <span className="text-[var(--accent-primary)]">•</span>
+                            <span>{reason}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Row 4: Status Quick Dropdown */}
+                  <div className="pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-mono uppercase text-[var(--text-muted)] font-semibold shrink-0">
+                      Workflow Status:
+                    </span>
+                    <select
+                      value={item.status}
+                      onChange={(e: any) =>
+                        handleStatusChange(item.id, item.department, e.target.value as ComplaintStatus)
+                      }
+                      className="flex-1 max-w-[200px] px-2.5 py-1.5 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-xs font-mono text-[var(--text-primary)] font-medium focus:outline-none focus:border-[var(--accent-primary)]"
+                    >
+                      <option value="New">New</option>
+                      <option value="Under Review">Under Review</option>
+                      <option value="Assigned">Assigned</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Resolved">Resolved</option>
+                      <option value="Duplicate">Duplicate</option>
+                    </select>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="p-8 text-center text-[var(--text-secondary)] font-mono text-xs">
+              No complaints match current filter conditions.
+            </div>
+          )}
+        </div>
+
         {/* Pagination Controls */}
         {pagination.totalPages > 1 && (
-          <div className="px-6 py-3 border-t border-[var(--border-subtle)] flex items-center justify-between text-xs font-mono tabular-nums">
-            <span className="text-[var(--text-secondary)]">
+          <div className="px-4 sm:px-6 py-3 border-t border-[var(--border-subtle)] flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-mono tabular-nums">
+            <span className="text-[var(--text-secondary)] text-[11px] sm:text-xs">
               Page {pagination.page} of {pagination.totalPages} ({pagination.total} total tickets)
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage <= 1}
-                className="stitch-btn-secondary px-3 py-1.5 rounded-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                className="stitch-btn-secondary px-3 py-1.5 rounded-sm disabled:opacity-40 disabled:cursor-not-allowed flex-1 sm:flex-none text-center"
               >
                 Previous
               </button>
               <button
                 onClick={() => setCurrentPage((p) => Math.min(pagination.totalPages, p + 1))}
                 disabled={currentPage >= pagination.totalPages}
-                className="stitch-btn-secondary px-3 py-1.5 rounded-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                className="stitch-btn-secondary px-3 py-1.5 rounded-sm disabled:opacity-40 disabled:cursor-not-allowed flex-1 sm:flex-none text-center"
               >
                 Next
               </button>

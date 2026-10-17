@@ -211,17 +211,17 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
   const suspectedDups = complaint.suspectedDuplicates || [];
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
+    <div className="min-h-screen py-6 sm:py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6 sm:space-y-8 animate-fade-in">
       {/* Action Notice Toast */}
       {actionNotice && (
-        <div className="fixed top-20 right-6 z-50 p-4 rounded-sm bg-[var(--surface-card)] border border-[var(--border-strong)] text-[var(--text-primary)] text-xs font-mono font-semibold flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-[var(--status-resolved)]" />
-          <span>{actionNotice}</span>
+        <div className="fixed top-16 sm:top-20 right-4 left-4 sm:left-auto sm:right-6 z-50 p-3.5 sm:p-4 rounded-sm bg-[var(--surface-card)] border border-[var(--border-strong)] text-[var(--text-primary)] text-xs font-mono font-semibold flex items-center gap-2 shadow-2xl">
+          <CheckCircle2 className="w-4 h-4 text-[var(--status-resolved)] shrink-0" />
+          <span className="truncate">{actionNotice}</span>
         </div>
       )}
 
       {/* Top Breadcrumb & Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-[var(--border-subtle)] pb-4">
         <Link
           href="/admin"
           className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider font-semibold text-[var(--text-secondary)] hover:text-[var(--accent-primary)] transition-colors"
@@ -230,7 +230,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
           <span>Back to Triage Table</span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           <button
             type="button"
             onClick={() => {
@@ -238,7 +238,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
               setSelectedDept(complaint.department);
               setIsModalOpen(true);
             }}
-            className="stitch-btn-accent flex items-center gap-2 px-4 py-2.5 rounded-sm text-xs"
+            className="stitch-btn-accent flex items-center justify-center gap-2 px-4 py-2.5 rounded-sm text-xs w-full sm:w-auto"
           >
             <Sliders className="w-4 h-4" />
             <span>Update Status & Field Evidence</span>
@@ -247,7 +247,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
       </div>
 
       {/* Ticket Overview Bar */}
-      <div className="p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] relative overflow-hidden">
+      <div className="p-4 sm:p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] relative overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2 flex-1">
             <div className="flex flex-wrap items-center gap-2.5">
@@ -280,7 +280,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
               </span>
             </div>
 
-            <h1 className="font-editorial text-3xl sm:text-4xl text-[var(--text-primary)] tracking-tight">
+            <h1 className="font-editorial text-2xl sm:text-3xl md:text-4xl text-[var(--text-primary)] tracking-tight">
               {complaint.title}
             </h1>
 
@@ -288,14 +288,14 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
               {complaint.description}
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-[var(--text-secondary)] pt-2 border-t border-[var(--border-subtle)]">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs font-mono text-[var(--text-secondary)] pt-2 border-t border-[var(--border-subtle)]">
               <div className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
-                <span>{complaint.location.address}</span>
+                <span className="truncate max-w-[200px] sm:max-w-none">{complaint.location.address}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Building2 className="w-3.5 h-3.5 text-[var(--text-muted)]" />
-                <span>{complaint.department}</span>
+                <span className="truncate max-w-[180px] sm:max-w-none">{complaint.department}</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-[var(--text-muted)]" />
@@ -318,7 +318,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
       </div>
 
       {/* Lifecycle Dispatch Controller */}
-      <div className="p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-4">
+      <div className="p-4 sm:p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-subtle)] space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[var(--border-subtle)]">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-sm bg-[var(--accent-primary-subtle)] border border-[var(--accent-primary-border)] text-[var(--accent-primary)]">
@@ -341,7 +341,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
               setSelectedDept(complaint.department);
               setIsModalOpen(true);
             }}
-            className="stitch-btn-secondary flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs self-start sm:self-auto"
+            className="stitch-btn-secondary flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-sm text-xs w-full sm:w-auto"
           >
             <Camera className="w-3.5 h-3.5 text-[var(--accent-primary)]" />
             <span>Attach Evidence & Dispatch Notes</span>
@@ -349,7 +349,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
         </div>
 
         {/* 5-Step Stepper Rail for Admin Control */}
-        <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 sm:gap-3 pt-1">
           {[
             { key: 'New' as ComplaintStatus, label: '01. New', sub: 'Initial Citizen Filing' },
             { key: 'Under Review' as ComplaintStatus, label: '02. Under Review', sub: 'Triage & Verification' },
@@ -623,11 +623,11 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-2">
                   <button
                     type="button"
                     onClick={() => handleRejectDuplicate(dup.id)}
-                    className="stitch-btn-secondary flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs"
+                    className="stitch-btn-secondary flex items-center justify-center gap-1.5 px-4 py-2 rounded-sm text-xs w-full sm:w-auto"
                   >
                     <XCircle className="w-4 h-4 text-[var(--accent-primary)]" />
                     <span>Reject Duplicate (Keep Separate)</span>
@@ -636,7 +636,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
                   <button
                     type="button"
                     onClick={() => handleConfirmMerge(dup.id)}
-                    className="stitch-btn-primary flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs"
+                    className="stitch-btn-primary flex items-center justify-center gap-1.5 px-4 py-2 rounded-sm text-xs w-full sm:w-auto"
                   >
                     <GitMerge className="w-4 h-4" />
                     <span>Confirm Merge & Elevate Urgency (+7 pts)</span>
@@ -646,7 +646,7 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
             ))}
           </div>
         ) : (
-          <div className="p-8 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-center space-y-2">
+          <div className="p-6 sm:p-8 rounded-sm bg-[var(--surface-elevated)] border border-[var(--border-subtle)] text-center space-y-2">
             <CheckCircle2 className="w-8 h-8 text-[var(--status-resolved)] mx-auto" />
             <h4 className="text-sm font-semibold text-[var(--text-primary)]">No Pending Duplicates in Radius</h4>
             <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto">
@@ -658,11 +658,11 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
 
       {/* 4. Status Transition & Evidence Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 animate-in fade-in">
-          <div className="w-full max-w-lg p-6 rounded-md bg-[var(--surface-card)] border border-[var(--border-strong)] space-y-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-xs animate-in fade-in">
+          <div className="w-full max-w-lg p-4 sm:p-6 max-h-[92vh] overflow-y-auto rounded-md bg-[var(--surface-card)] border border-[var(--border-strong)] space-y-4 sm:space-y-5 shadow-2xl">
             <div className="flex items-center justify-between pb-3 border-b border-[var(--border-subtle)]">
-              <h3 className="font-editorial text-2xl text-[var(--text-primary)] flex items-center gap-2">
-                <Sliders className="w-4 h-4 text-[var(--accent-primary)]" />
+              <h3 className="font-editorial text-lg sm:text-2xl text-[var(--text-primary)] flex items-center gap-2">
+                <Sliders className="w-4 h-4 text-[var(--accent-primary)] shrink-0" />
                 <span>Transition Status & Log Field Evidence</span>
               </h3>
               <button

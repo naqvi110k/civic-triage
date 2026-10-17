@@ -1,0 +1,67 @@
+import type { MetadataRoute } from 'next';
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: 'CivicPulse — Municipal Infrastructure Triage & Dispatch Ledger',
+    short_name: 'CivicPulse',
+    description:
+      'Deterministic civic complaint triage system with spatial deduplication, auditable priority scoring, and verifiable field dispatch.',
+    start_url: '/',
+    id: '/',
+    scope: '/',
+    display: 'standalone',
+    orientation: 'portrait-primary',
+    background_color: '#0A0A0A',
+    theme_color: '#D9381E',
+    categories: ['government', 'utilities', 'productivity'],
+    icons: [
+      {
+        src: '/icons/icon-192x192.png',
+        sizes: '192x192',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/icons/icon-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'any',
+      },
+      {
+        src: '/icons/icon-maskable-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
+      },
+      {
+        src: '/icons/icon.svg',
+        sizes: 'any',
+        type: 'image/svg+xml',
+        purpose: 'any',
+      },
+    ],
+    shortcuts: [
+      {
+        name: 'Report Civic Hazard',
+        short_name: 'Report Issue',
+        description: 'File a new infrastructure hazard with photographic evidence',
+        url: '/complaints/new',
+        icons: [{ src: '/icons/icon-192x192.png', sizes: '192x192' }],
+      },
+      {
+        name: 'My Case Ledger',
+        short_name: 'My Reports',
+        description: 'Inspect status and verification of filed reports',
+        url: '/complaints',
+        icons: [{ src: '/icons/icon-192x192.png', sizes: '192x192' }],
+      },
+      {
+        name: 'Dispatcher Command',
+        short_name: 'Admin Queue',
+        description: 'High-density administrative triage console',
+        url: '/admin',
+        icons: [{ src: '/icons/icon-192x192.png', sizes: '192x192' }],
+      },
+    ],
+  };
+}
