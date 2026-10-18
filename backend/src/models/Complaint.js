@@ -40,6 +40,12 @@ const PRIORITY_BANDS = ['low', 'medium', 'high', 'Low', 'Medium', 'High'];
 
 const complaintSchema = new mongoose.Schema(
   {
+    customId: {
+      type: String,
+      trim: true,
+      default: null,
+      index: true,
+    },
     title: {
       type: String,
       trim: true,

@@ -38,8 +38,8 @@ import { fetchAdminStats, AdminStatsResponse, fetchAdminComplaints, AdminComplai
 export default function AdminDashboardPage() {
   const { complaints, updateStatusWithEvidence } = useComplaintsStore();
   const [adminStats, setAdminStats] = useState<AdminStatsResponse | null>(null);
-  const [adminComplaints, setAdminComplaints] = useState<Complaint[]>([]);
-  const [pagination, setPagination] = useState({ page: 1, limit: 50, total: 0, totalPages: 1 });
+  const [adminComplaints, setAdminComplaints] = useState<Complaint[]>(() => complaints);
+  const [pagination, setPagination] = useState({ page: 1, limit: 50, total: complaints.length || 0, totalPages: 1 });
   const [isLoadingAdmin, setIsLoadingAdmin] = useState(false);
 
   useEffect(() => {
@@ -68,11 +68,17 @@ export default function AdminDashboardPage() {
           page: currentPage,
           limit: 50,
         });
-        setAdminComplaints(result.complaints);
-        setPagination(result.pagination);
+        if (result.complaints && result.complaints.length > 0) {
+          setAdminComplaints(result.complaints);
+          setPagination(result.pagination);
+        } else if (complaints.length > 0) {
+          setAdminComplaints(complaints);
+        }
       } catch (err) {
         console.warn('[Admin] Server-side fetch failed, falling back to store:', err);
-        setAdminComplaints(complaints);
+        if (complaints.length > 0) {
+          setAdminComplaints(complaints);
+        }
       } finally {
         setIsLoadingAdmin(false);
       }

@@ -14,6 +14,7 @@ const { calculateDistanceMeters } = require('../utils/geo');
  */
 const processComplaint = async (inputData) => {
   const {
+    customId = null,
     title,
     description,
     photoUrl = null,
@@ -134,6 +135,7 @@ const processComplaint = async (inputData) => {
 
   return {
     processedFields: {
+      customId,
       title: title || description.slice(0, 45) + (description.length > 45 ? '...' : ''),
       description,
       category: finalCategory,

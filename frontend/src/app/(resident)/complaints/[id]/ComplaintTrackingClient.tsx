@@ -51,12 +51,13 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
   const router = useRouter();
   const { getComplaintById, reopenComplaint } = useComplaintsStore();
   
+  const initialComplaint = getComplaintById(id);
   const [mounted, setMounted] = useState(false);
-  const [fetchedComplaint, setFetchedComplaint] = useState<Complaint | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [fetchedComplaint, setFetchedComplaint] = useState<Complaint | null>(initialComplaint || null);
+  const [isLoading, setIsLoading] = useState(!initialComplaint);
 
   const storeComplaint = getComplaintById(id);
-  const complaint = fetchedComplaint || storeComplaint;
+  const complaint = fetchedComplaint || storeComplaint || initialComplaint;
 
   useEffect(() => {
     setMounted(true);
@@ -88,14 +89,21 @@ export default function ComplaintTrackingClient({ id }: { id: string }) {
     }, 5000);
 
     const handleStorageUpdate = () => {
+      const existing = getComplaintById(id);
+      if (existing) {
+        setFetchedComplaint(existing);
+        setIsLoading(false);
+      }
       fetchLatest();
     };
     window.addEventListener('civicpulse_complaints_updated', handleStorageUpdate);
+    window.addEventListener('civicpulse_db_updated', handleStorageUpdate);
 
     return () => {
       isCancelled = true;
       clearInterval(pollInterval);
       window.removeEventListener('civicpulse_complaints_updated', handleStorageUpdate);
+      window.removeEventListener('civicpulse_db_updated', handleStorageUpdate);
     };
   }, [id, getComplaintById]);
 

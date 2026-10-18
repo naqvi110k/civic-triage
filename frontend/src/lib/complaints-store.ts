@@ -1,247 +1,182 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Complaint, StatusHistory } from './types';
 import {
   fetchComplaints as apiFetchComplaints,
-  fetchComplaintById as apiFetchComplaintById,
   createComplaint as apiCreateComplaint,
   updateComplaintStatus as apiUpdateStatus,
   mergeDuplicate as apiMergeDuplicate,
 } from './api';
 
-const STORAGE_KEY = 'civicpulse_live_complaints';
+// In-memory live complaint store populated exclusively from MongoDB database
+let inMemoryComplaints: Complaint[] = [];
+let isInitialFetching = false;
+
+// Delete any legacy localStorage complaints from previous sessions
+if (typeof window !== 'undefined') {
+  try {
+    localStorage.removeItem('civicpulse_live_complaints');
+  } catch (_) {}
+}
+
+function notifyUpdate() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('civicpulse_db_updated'));
+    window.dispatchEvent(new Event('civicpulse_complaints_updated'));
+  }
+}
 
 export function getStoredComplaints(): Complaint[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (err) {
-    console.error('Failed reading complaints from localStorage:', err);
-    return [];
-  }
+  return inMemoryComplaints;
 }
 
 export function saveStoredComplaints(complaints: Complaint[]) {
-  if (typeof window === 'undefined') return;
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(complaints));
-    window.dispatchEvent(new Event('civicpulse_complaints_updated'));
-  } catch (err) {
-    console.error('Failed writing complaints to localStorage:', err);
-  }
+  inMemoryComplaints = complaints;
+  notifyUpdate();
 }
 
 export function useComplaintsStore() {
-  const [complaints, setComplaints] = useState<Complaint[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [complaints, setComplaints] = useState<Complaint[]>(inMemoryComplaints);
+  const [isLoaded, setIsLoaded] = useState(inMemoryComplaints.length > 0);
   const [isSyncing, setIsSyncing] = useState(false);
-  const syncRequestedRef = useRef(false);
 
-  // Load cached data upon client mount and store updates
-  const reload = useCallback(() => {
-    const data = getStoredComplaints();
-    setComplaints(data);
-    setIsLoaded(true);
-  }, []);
-
-  // Sync with live Express/MongoDB backend
+  // Sync strictly with live MongoDB backend
   const syncWithBackend = useCallback(async () => {
-    if (isSyncing) return;
+    if (isSyncing || isInitialFetching) return;
     try {
       setIsSyncing(true);
+      isInitialFetching = true;
       const backendComplaints = await apiFetchComplaints({ limit: 100 });
       if (Array.isArray(backendComplaints)) {
-        saveStoredComplaints(backendComplaints);
+        inMemoryComplaints = backendComplaints;
         setComplaints(backendComplaints);
         setIsLoaded(true);
+        notifyUpdate();
       }
     } catch (err) {
-      console.warn('[CivicPulse Store] Live backend fetch notice:', err);
+      console.warn('[CivicPulse Store] Database fetch notice:', err);
     } finally {
       setIsSyncing(false);
+      isInitialFetching = false;
     }
   }, [isSyncing]);
 
   useEffect(() => {
-    reload();
-
-    if (!syncRequestedRef.current) {
-      syncRequestedRef.current = true;
+    // If not yet loaded from DB, trigger sync
+    if (inMemoryComplaints.length === 0) {
       syncWithBackend();
+    } else {
+      setComplaints(inMemoryComplaints);
+      setIsLoaded(true);
     }
 
-    const handleStorageUpdate = () => reload();
-    window.addEventListener('civicpulse_complaints_updated', handleStorageUpdate);
-    window.addEventListener('storage', handleStorageUpdate);
-    return () => {
-      window.removeEventListener('civicpulse_complaints_updated', handleStorageUpdate);
-      window.removeEventListener('storage', handleStorageUpdate);
+    const handleUpdate = () => {
+      setComplaints([...inMemoryComplaints]);
     };
-  }, [reload, syncWithBackend]);
 
-  // Add new complaint with backend AI triage pipeline and optimistic local display
-  const addComplaint = useCallback(async (complaint: Complaint, photoFile?: File | null): Promise<Complaint> => {
-    // 1. Optimistic entry for zero UI blocking
-    const existing = getStoredComplaints();
-    const optimisticList = [complaint, ...existing];
-    saveStoredComplaints(optimisticList);
-    setComplaints(optimisticList);
+    window.addEventListener('civicpulse_db_updated', handleUpdate);
+    return () => {
+      window.removeEventListener('civicpulse_db_updated', handleUpdate);
+    };
+  }, [syncWithBackend]);
 
-    // 2. Transmit to backend for automated AI keyword triage, duplicate check & 2dsphere indexing
-    try {
-      const createdFromBackend = await apiCreateComplaint({
-        title: complaint.title,
-        description: complaint.description,
-        lat: complaint.location.lat,
-        lng: complaint.location.lng,
-        address: complaint.location.address,
-        category: complaint.category,
-        photoFile: photoFile || null,
-        contactName: complaint.contactInfo?.name,
-        contactPhone: complaint.contactInfo?.phone,
-        contactEmail: complaint.contactInfo?.email,
-      });
+  // Add new complaint to database and update memory state
+  const addComplaint = useCallback(
+    async (complaint: Complaint, photoFile?: File | null): Promise<Complaint> => {
+      try {
+        const createdFromBackend = await apiCreateComplaint({
+          title: complaint.title,
+          description: complaint.description,
+          lat: complaint.location.lat,
+          lng: complaint.location.lng,
+          address: complaint.location.address,
+          category: complaint.category,
+          photoFile: photoFile || null,
+          contactName: complaint.contactInfo?.name,
+          contactPhone: complaint.contactInfo?.phone,
+          contactEmail: complaint.contactInfo?.email,
+        });
 
-      // Replace optimistic placeholder with real backend-persisted complaint
-      const currentStored = getStoredComplaints();
-      const updatedList = currentStored.map((c) =>
-        c.id === complaint.id ? createdFromBackend : c
-      );
-      saveStoredComplaints(updatedList);
-      setComplaints(updatedList);
-      return createdFromBackend;
-    } catch (err) {
-      console.warn('[CivicPulse Store] Backend submission fallback to local store:', err);
-      return complaint;
-    }
-  }, []);
-
-  // Retrieve complaint by ID, with async backend fallback if not cached
-  const getComplaintById = useCallback((id: string): Complaint | undefined => {
-    const list = getStoredComplaints();
-    const found = list.find((c) => c.id === id);
-    if (found) return found;
-
-    // Asynchronously fetch from backend if direct URL was opened
-    apiFetchComplaintById(id).then((fromBackend) => {
-      if (fromBackend) {
-        const current = getStoredComplaints();
-        if (!current.some((c) => c.id === fromBackend.id)) {
-          const updated = [fromBackend, ...current];
-          saveStoredComplaints(updated);
-          setComplaints(updated);
-        }
+        inMemoryComplaints = [createdFromBackend, ...inMemoryComplaints];
+        setComplaints(inMemoryComplaints);
+        notifyUpdate();
+        return createdFromBackend;
+      } catch (err) {
+        console.error('[CivicPulse Store] Database complaint creation failed:', err);
+        throw err;
       }
-    }).catch(() => {});
+    },
+    []
+  );
 
-    return undefined;
+  // Retrieve complaint by ID from database in-memory registry
+  const getComplaintById = useCallback((id: string): Complaint | undefined => {
+    if (!id) return undefined;
+    const cleanId = String(id).trim().replace(/^#/, '');
+    return inMemoryComplaints.find(
+      (c) =>
+        c.id === id ||
+        c.id === cleanId ||
+        (c as any)._id === id ||
+        (c as any)._id === cleanId ||
+        (c as any).customId === id ||
+        (c as any).customId === cleanId ||
+        (c.id && c.id.toLowerCase() === cleanId.toLowerCase())
+    );
   }, []);
 
   const updateComplaint = useCallback((id: string, updates: Partial<Complaint>) => {
-    const existing = getStoredComplaints();
-    const updated = existing.map((c) => (c.id === id ? { ...c, ...updates } : c));
-    saveStoredComplaints(updated);
-    setComplaints(updated);
-  }, []);
-
-  const reopenComplaint = useCallback((id: string, reason: string) => {
-    const existing = getStoredComplaints();
-    const updated = existing.map((c) => {
-      if (c.id === id) {
-        const historyEntry: StatusHistory = {
-          complaintId: id,
-          status: 'Under Review',
-          note: `Citizen reopened issue within 72h window: "${reason}"`,
-          changedBy: 'Sarah Chen (Resident)',
-          changedAt: new Date().toISOString(),
-        };
-        const currentHistory = c.history || [];
-        return {
-          ...c,
-          status: 'Under Review' as const,
-          history: [...currentHistory, historyEntry],
-        };
-      }
-      return c;
-    });
-    saveStoredComplaints(updated);
-    setComplaints(updated);
-
-    // Call backend
-    apiUpdateStatus(id, {
-      status: 'Under Review',
-      note: `Citizen reopened issue: "${reason}"`,
-    }).catch((err) => console.warn('Failed updating reopen status on backend:', err));
-  }, []);
-
-  const confirmMergeDuplicate = useCallback((complaintId: string, duplicateId: string) => {
-    const existing = getStoredComplaints();
-    const updated = existing.map((c) => {
-      if (c.id === complaintId) {
-        const remainingSuspects = (c.suspectedDuplicates || []).filter((d) => d.id !== duplicateId);
-        const newDupCount = c.duplicateCount + 1;
-        const newScore = Math.min(100, c.priorityScore + 7);
-        const historyEntry: StatusHistory = {
-          complaintId,
-          status: c.status,
-          note: `Admin confirmed duplicate merge with ${duplicateId}. Urgency score boosted (+7 pts).`,
-          changedBy: 'Marcus Vance (City Admin)',
-          changedAt: new Date().toISOString(),
-        };
-        return {
-          ...c,
-          duplicateCount: newDupCount,
-          priorityScore: newScore,
-          priorityReasons: [
-            ...c.priorityReasons,
-            `Admin verified recurring cluster duplicate (+7 pts)`,
-          ],
-          suspectedDuplicates: remainingSuspects,
-          history: [...(c.history || []), historyEntry],
-        };
-      }
-      return c;
-    });
-    saveStoredComplaints(updated);
-    setComplaints(updated);
-
-    // Call backend merge route
-    apiMergeDuplicate(complaintId, true).catch((err) =>
-      console.warn('Backend duplicate merge notice:', err)
+    inMemoryComplaints = inMemoryComplaints.map((c) =>
+      c.id === id || (c as any)._id === id ? { ...c, ...updates } : c
     );
+    setComplaints(inMemoryComplaints);
+    notifyUpdate();
   }, []);
 
-  const rejectDuplicate = useCallback((complaintId: string, duplicateId: string) => {
-    const existing = getStoredComplaints();
-    const updated = existing.map((c) => {
-      if (c.id === complaintId) {
-        const remainingSuspects = (c.suspectedDuplicates || []).filter((d) => d.id !== duplicateId);
-        const historyEntry: StatusHistory = {
-          complaintId,
-          status: c.status,
-          note: `Admin audited and rejected suspected duplicate ${duplicateId} (Distinct incident verified).`,
-          changedBy: 'Marcus Vance (City Admin)',
-          changedAt: new Date().toISOString(),
-        };
-        return {
-          ...c,
-          suspectedDuplicates: remainingSuspects,
-          history: [...(c.history || []), historyEntry],
-        };
+  const reopenComplaint = useCallback(async (id: string, reason: string) => {
+    try {
+      await apiUpdateStatus(id, {
+        status: 'Under Review',
+        note: `Citizen reopened issue: "${reason}"`,
+      });
+      const refreshed = await apiFetchComplaints({ limit: 100 });
+      if (Array.isArray(refreshed)) {
+        inMemoryComplaints = refreshed;
+        setComplaints(refreshed);
+        notifyUpdate();
       }
-      return c;
-    });
-    saveStoredComplaints(updated);
-    setComplaints(updated);
+    } catch (err) {
+      console.warn('Failed updating reopen status on database:', err);
+    }
+  }, []);
 
-    // Call backend reject route
-    apiMergeDuplicate(complaintId, false).catch((err) =>
-      console.warn('Backend duplicate reject notice:', err)
-    );
+  const confirmMergeDuplicate = useCallback(async (complaintId: string, duplicateId: string) => {
+    try {
+      await apiMergeDuplicate(complaintId, true);
+      const refreshed = await apiFetchComplaints({ limit: 100 });
+      if (Array.isArray(refreshed)) {
+        inMemoryComplaints = refreshed;
+        setComplaints(refreshed);
+        notifyUpdate();
+      }
+    } catch (err) {
+      console.warn('Database duplicate merge notice:', err);
+    }
+  }, []);
+
+  const rejectDuplicate = useCallback(async (complaintId: string, duplicateId: string) => {
+    try {
+      await apiMergeDuplicate(complaintId, false);
+      const refreshed = await apiFetchComplaints({ limit: 100 });
+      if (Array.isArray(refreshed)) {
+        inMemoryComplaints = refreshed;
+        setComplaints(refreshed);
+        notifyUpdate();
+      }
+    } catch (err) {
+      console.warn('Database duplicate reject notice:', err);
+    }
   }, []);
 
   const updateStatusWithEvidence = useCallback(
@@ -253,44 +188,6 @@ export function useComplaintsStore() {
       afterPhotoUrl?: string,
       evidenceFile?: File | null
     ): Promise<Complaint | null> => {
-      let resultComplaint: Complaint | null = null;
-      const existing = getStoredComplaints();
-      const updated = existing.map((c) => {
-        if (c.id === id) {
-          const historyEntry: StatusHistory = {
-            complaintId: id,
-            status: newStatus,
-            note: note || `Status transitioned to ${newStatus}.`,
-            evidencePhotoUrl: afterPhotoUrl,
-            changedBy: 'Municipal Operations Dispatch',
-            changedAt: new Date().toISOString(),
-          };
-          const resEvidence =
-            newStatus === 'Resolved' && afterPhotoUrl
-              ? {
-                  afterPhotoUrl,
-                  completedAt: new Date().toISOString(),
-                  crewNotes: note || 'Field crew completed repair and verified site clearance.',
-                  inspectorName: 'Marcus Vance (Chief Dispatcher)',
-                }
-              : c.resolutionEvidence;
-
-          const updatedC: Complaint = {
-            ...c,
-            status: newStatus,
-            department: department || c.department,
-            resolutionEvidence: resEvidence,
-            history: [...(c.history || []).filter((h) => h.status !== newStatus), historyEntry],
-          };
-          resultComplaint = updatedC;
-          return updatedC;
-        }
-        return c;
-      });
-      saveStoredComplaints(updated);
-      setComplaints(updated);
-
-      // Call backend status update to persist in MongoDB and StatusHistory collection
       try {
         const backendUpdated = await apiUpdateStatus(id, {
           status: newStatus,
@@ -299,17 +196,21 @@ export function useComplaintsStore() {
           evidenceFile: evidenceFile || null,
           afterPhotoUrl,
         });
+
         if (backendUpdated) {
-          const current = getStoredComplaints();
-          const refreshed = current.map((c) => (c.id === id ? backendUpdated : c));
-          saveStoredComplaints(refreshed);
-          setComplaints(refreshed);
+          inMemoryComplaints = inMemoryComplaints.map((c) =>
+            c.id === id || (c as any)._id === id || (c as any).customId === id
+              ? backendUpdated
+              : c
+          );
+          setComplaints([...inMemoryComplaints]);
+          notifyUpdate();
           return backendUpdated;
         }
       } catch (err) {
-        console.warn('Backend status update notice:', err);
+        console.error('Database status update notice:', err);
       }
-      return resultComplaint;
+      return null;
     },
     []
   );

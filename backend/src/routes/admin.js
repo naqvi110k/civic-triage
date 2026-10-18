@@ -70,12 +70,18 @@ router.patch('/complaints/:id/status', uploadEvidence, async (req, res, next) =>
   try {
     const { id } = req.params;
     const { status, note, department } = req.body;
+    const cleanId = id.trim().replace(/^#/, '');
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({ error: 'Complaint not found.' });
+    let complaint = null;
+    if (mongoose.Types.ObjectId.isValid(cleanId)) {
+      complaint = await Complaint.findById(cleanId);
+    }
+    if (!complaint) {
+      complaint = await Complaint.findOne({
+        $or: [{ customId: cleanId }, { customId: id }],
+      });
     }
 
-    const complaint = await Complaint.findById(id);
     if (!complaint) {
       return res.status(404).json({ error: 'Complaint not found.' });
     }

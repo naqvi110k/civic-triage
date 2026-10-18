@@ -46,12 +46,13 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
     updateStatusWithEvidence 
   } = useComplaintsStore();
 
+  const initialComplaint = getComplaintById(id);
   const [mounted, setMounted] = useState(false);
-  const [fetchedComplaint, setFetchedComplaint] = useState<Complaint | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [fetchedComplaint, setFetchedComplaint] = useState<Complaint | null>(initialComplaint || null);
+  const [isLoading, setIsLoading] = useState(!initialComplaint);
 
   const storeComplaint = getComplaintById(id);
-  const complaint = fetchedComplaint || storeComplaint;
+  const complaint = fetchedComplaint || storeComplaint || initialComplaint;
 
   useEffect(() => {
     setMounted(true);
@@ -60,13 +61,39 @@ export default function AdminComplaintDetailClient({ id }: { id: string }) {
       setFetchedComplaint(existing);
       setIsLoading(false);
     }
+
+    let isCancelled = false;
     fetchComplaintById(id)
       .then((data) => {
-        if (data) setFetchedComplaint(data);
+        if (!isCancelled && data) {
+          setFetchedComplaint(data);
+          setIsLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.warn('Error loading admin complaint details:', err);
       })
       .finally(() => {
-        setIsLoading(false);
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
       });
+
+    const handleStorageUpdate = () => {
+      const updated = getComplaintById(id);
+      if (updated && !isCancelled) {
+        setFetchedComplaint(updated);
+        setIsLoading(false);
+      }
+    };
+    window.addEventListener('civicpulse_complaints_updated', handleStorageUpdate);
+    window.addEventListener('civicpulse_db_updated', handleStorageUpdate);
+
+    return () => {
+      isCancelled = true;
+      window.removeEventListener('civicpulse_complaints_updated', handleStorageUpdate);
+      window.removeEventListener('civicpulse_db_updated', handleStorageUpdate);
+    };
   }, [id, getComplaintById]);
 
   // Status & Evidence Modal

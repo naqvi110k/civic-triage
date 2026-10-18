@@ -91,6 +91,7 @@ router.post('/', auth(false), uploadPhoto, async (req, res, next) => {
 
     // Execute triage pipeline
     const { processedFields, duplicateMatch, rules, sensitiveZones } = await processComplaint({
+      customId: req.body.customId || `CP-${Date.now()}`,
       title,
       description: description.trim(),
       photoUrl,
@@ -314,15 +315,35 @@ router.get('/transparency', async (req, res, next) => {
  */
 router.get('/:id', async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const decodedId = decodeURIComponent(id).trim().replace(/^#/, '');
+    const cleanId = id.trim().replace(/^#/, '');
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({ error: 'Complaint not found.' });
+    let complaint = null;
+    if (mongoose.Types.ObjectId.isValid(cleanId)) {
+      complaint = await Complaint.findById(cleanId)
+        .populate('duplicateOf', 'title category status priorityScore photoUrl')
+        .select('-embedding');
     }
 
-    const complaint = await Complaint.findById(id)
-      .populate('duplicateOf', 'title category status priorityScore photoUrl')
-      .select('-embedding');
+    if (!complaint && mongoose.Types.ObjectId.isValid(decodedId)) {
+      complaint = await Complaint.findById(decodedId)
+        .populate('duplicateOf', 'title category status priorityScore photoUrl')
+        .select('-embedding');
+    }
+
+    if (!complaint) {
+      const escaped = cleanId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      complaint = await Complaint.findOne({
+        $or: [
+          { customId: cleanId },
+          { customId: decodedId },
+          { customId: id },
+          { customId: new RegExp(`^${escaped}$`, 'i') },
+        ],
+      })
+        .populate('duplicateOf', 'title category status priorityScore photoUrl')
+        .select('-embedding');
+    }
 
     if (!complaint) {
       return res.status(404).json({ error: 'Complaint not found.' });

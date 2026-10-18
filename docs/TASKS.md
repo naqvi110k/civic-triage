@@ -270,7 +270,10 @@
     - **Admin Rules (`/admin/rules`)**: stacked action buttons on mobile, non-sticky live simulator on small screens, and responsive weight sliders.
     - **Spatial Map (`/admin/map`)**: horizontal scrollable priority filter chips and collapsible mobile GIS telemetry HUD legend.
     - **Complaint Detail (`/admin/complaints/[id]`)**: responsive lifecycle stepper, stacked duplicate action buttons, and scrollable modal.
-  - Verified: `npm run build` passes with 20 static/partial prerender routes and `npm run test:logic` passes with 15/15 checks.
+- [x] **Task 10.13: Exclusively Database-Driven Architecture & Zero Local Storage Complaints**
+  - Removed all `SAMPLE_COMPLAINTS` mock data from frontend codebase (`frontend/src/lib/types.ts` now exports empty array).
+  - Eliminated all complaint reading and writing to `localStorage`. Only live complaints directly fetched from MongoDB Atlas are displayed.
+  - Resolved inspect / complaint detail delay by adding cross-event reactivity (`civicpulse_db_updated` & `civicpulse_complaints_updated`) and instant store-to-client binding.
+  - Enhanced backend `GET /api/complaints/:id` to support `decodeURIComponent` and case-insensitive regex lookup.
+  - Verified: `npm run test:logic` passes (15/15), `npm run build` succeeds with zero errors, and database query confirms 13 active complaints live in MongoDB Atlas.
   - *Status:* Completed & verified.
-
-

@@ -337,7 +337,7 @@ export async function getAdminAuthToken(): Promise<string | null> {
 }
 
 export function normalizeBackendComplaint(raw: any): Complaint {
-  const id = raw._id || raw.id || `CP-${Date.now()}`;
+  const id = raw.customId || raw.id || (raw._id ? String(raw._id) : null) || `CP-${Date.now()}`;
   const category = mapBackendCategory(raw.category);
   const aiCategory = mapBackendCategory(raw.aiCategory || raw.category);
   const status = mapBackendStatus(raw.status);
@@ -435,6 +435,8 @@ export function normalizeBackendComplaint(raw: any): Complaint {
       visualFeatures: raw.recommendedAction ? [raw.recommendedAction] : ['surface anomaly', 'public right-of-way'],
     },
     suspectedDuplicates: Array.isArray(raw.suspectedDuplicates) ? raw.suspectedDuplicates : undefined,
+    _id: raw._id ? String(raw._id) : id,
+    customId: raw.customId || id,
   };
 }
 
