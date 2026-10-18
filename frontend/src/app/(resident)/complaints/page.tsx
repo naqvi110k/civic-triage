@@ -32,27 +32,36 @@ import {
   Camera,
   Layers,
   Wrench,
-  Truck
+  Truck,
+  Globe,
+  User
 } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/utils';
 
 export default function MyComplaintsDashboard() {
   const { complaints, isLoaded } = useComplaintsStore();
   const [userSpecificComplaints, setUserSpecificComplaints] = useState<Complaint[] | null>(null);
+  const [viewScope, setViewScope] = useState<'all' | 'mine'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<'all' | 'in-progress' | 'resolved'>('all');
   const [expandedBreakdownId, setExpandedBreakdownId] = useState<string | null>(null);
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('view') === 'mine' || params.get('filter') === 'mine') {
+        setViewScope('mine');
+      }
+    }
     fetchMyComplaints().then((mine) => {
-      if (mine && mine.length > 0) {
+      if (mine && Array.isArray(mine)) {
         setUserSpecificComplaints(mine);
       }
     });
   }, []);
 
-  const displayList = userSpecificComplaints && userSpecificComplaints.length > 0
-    ? userSpecificComplaints
+  const displayList = viewScope === 'mine'
+    ? (userSpecificComplaints || [])
     : complaints;
 
   const toggleBreakdown = (id: string, e: React.MouseEvent) => {
@@ -91,11 +100,15 @@ export default function MyComplaintsDashboard() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--border-subtle)] pb-5">
           <div>
             <span className="text-[11px] font-mono uppercase tracking-widest text-[var(--accent-primary)] font-bold">
-              RESIDENT CASE LEDGER
+              {viewScope === 'all' ? 'MUNICIPAL OPEN DATA REGISTRY' : 'RESIDENT CASE LEDGER'}
             </span>
-            <h1 className="font-editorial text-4xl tracking-tight mt-0.5">My Reports</h1>
+            <h1 className="font-editorial text-4xl tracking-tight mt-0.5">
+              {viewScope === 'all' ? 'Public Civic Ledger' : 'My Reports'}
+            </h1>
             <p className="text-xs font-mono text-[var(--text-muted)] mt-1 uppercase tracking-wider tabular-nums" suppressHydrationWarning>
-              Ward 4 Resident Activity · {countInProgress} Active Cases
+              {viewScope === 'all' 
+                ? `City-Wide Telemetry · ${countAll} Total Database Incidents` 
+                : `Resident Activity · ${countInProgress} Active Cases`}
             </p>
           </div>
           <Link
@@ -105,6 +118,39 @@ export default function MyComplaintsDashboard() {
             <PlusCircle className="w-4 h-4" />
             <span>Report an Issue</span>
           </Link>
+        </div>
+
+        {/* Scope Switcher: All Public Complaints vs My Submissions */}
+        <div className="flex items-center gap-2 border-b border-[var(--border-subtle)] pb-4">
+          <button
+            onClick={() => setViewScope('all')}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-sm text-xs font-mono font-semibold transition-all border ${
+              viewScope === 'all'
+                ? 'bg-[var(--accent-primary-subtle)] text-[var(--accent-primary)] border-[var(--accent-primary)] font-bold shadow-sm'
+                : 'bg-[var(--surface-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border-subtle)]'
+            }`}
+          >
+            <Globe className="w-3.5 h-3.5" />
+            <span>Public Civic Ledger</span>
+            <span className="text-[10px] bg-[var(--surface-elevated)] px-1.5 py-0.5 rounded font-mono border border-[var(--border-subtle)]">
+              {complaints.length}
+            </span>
+          </button>
+
+          <button
+            onClick={() => setViewScope('mine')}
+            className={`flex items-center gap-2 px-3.5 py-2 rounded-sm text-xs font-mono font-semibold transition-all border ${
+              viewScope === 'mine'
+                ? 'bg-[var(--accent-primary-subtle)] text-[var(--accent-primary)] border-[var(--accent-primary)] font-bold shadow-sm'
+                : 'bg-[var(--surface-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border-subtle)]'
+            }`}
+          >
+            <User className="w-3.5 h-3.5" />
+            <span>My Submissions</span>
+            <span className="text-[10px] bg-[var(--surface-elevated)] px-1.5 py-0.5 rounded font-mono border border-[var(--border-subtle)]">
+              {userSpecificComplaints ? userSpecificComplaints.length : 0}
+            </span>
+          </button>
         </div>
 
         {/* Filter Chips Row & Search */}

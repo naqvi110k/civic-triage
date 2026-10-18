@@ -274,6 +274,7 @@
   - Removed all `SAMPLE_COMPLAINTS` mock data from frontend codebase (`frontend/src/lib/types.ts` now exports empty array).
   - Eliminated all complaint reading and writing to `localStorage`. Only live complaints directly fetched from MongoDB Atlas are displayed.
   - Resolved inspect / complaint detail delay by adding cross-event reactivity (`civicpulse_db_updated` & `civicpulse_complaints_updated`) and instant store-to-client binding.
+  - Fixed Public Ledger (`/complaints`) microsecond collapse bug: added a dedicated scope toggle ("Public Civic Ledger" showing all 13 database complaints vs "My Submissions" for resident's reports), preventing `fetchMyComplaints()` from overriding the public ledger.
   - Enhanced backend `GET /api/complaints/:id` to support `decodeURIComponent` and case-insensitive regex lookup.
   - Verified: `npm run test:logic` passes (15/15), `npm run build` succeeds with zero errors, and database query confirms 13 active complaints live in MongoDB Atlas.
   - *Status:* Completed & verified.
