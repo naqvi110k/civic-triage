@@ -107,36 +107,36 @@ Staff can inspect full AI classification provenance, verify the exact point-by-p
 
 ```mermaid
 flowchart TD
-    subgraph Resident["👤 Resident Portal (Mobile PWA / Desktop)"]
-        R1["Submit Hazard Form\n(/complaints/new)"]
-        R2["Public Civic Ledger\n(/complaints)"]
-        R3["Audit Timeline & Proof\n(/complaints/:id)"]
+    subgraph Resident["Resident Portal (Mobile PWA and Desktop)"]
+        R1["Submit Hazard Form (/complaints/new)"]
+        R2["Public Civic Ledger (/complaints)"]
+        R3["Audit Timeline and Proof (/complaints/:id)"]
     end
 
-    subgraph Frontend["🖥️ Next.js 16.4 App Router (React 19 + TypeScript)"]
-        F1["REST Client Bridge\n(frontend/src/lib/api.ts)"]
-        F2["Reactive MongoDB Store\n(complaints-store.ts)"]
-        F3["Leaflet GIS Engine\n(CivicMap / AdminSpatialMap)"]
-        F4["Admin Command Console\n(/admin, /admin/map, /admin/rules)"]
+    subgraph Frontend["Next.js 16.4 App Router (React 19 + TypeScript)"]
+        F1["REST Client Bridge (frontend/src/lib/api.ts)"]
+        F2["Reactive MongoDB Store (complaints-store.ts)"]
+        F3["Leaflet GIS Engine (CivicMap and AdminSpatialMap)"]
+        F4["Admin Command Console (/admin, /map, /rules)"]
     end
 
-    subgraph Backend["⚙️ Express 5 API Server (Node.js 20+ / Vercel Serverless)"]
-        B1["POST /api/complaints/analyze\n(Real-time Photo Inspection)"]
-        B2["POST /api/complaints\n(Multipart Intake)"]
-        B3["GET /api/admin/complaints\n(Paginated Priority Queue)"]
-        B4["PATCH /api/admin/complaints/:id/status\n(Status + Evidence Upload)"]
-        B5["PUT /api/admin/rules & /zones\n(Live Queue Re-Scoring)"]
+    subgraph Backend["Express 5 API Server (Node.js 20 + Vercel Serverless)"]
+        B1["POST /api/complaints/analyze (Photo Inspection)"]
+        B2["POST /api/complaints (Multipart Intake)"]
+        B3["GET /api/admin/complaints (Priority Queue)"]
+        B4["PATCH /api/admin/complaints/:id/status (Evidence)"]
+        B5["PUT /api/admin/rules and /zones (Live Re-Scoring)"]
     end
 
-    subgraph Pipeline["🤖 AI Triage Pipeline (backend/src/services/pipeline.js)"]
-        P1["① Gemini 3.5 Flash-Lite Vision\nMultimodal Image + Text Analysis"]
-        P2["② Deterministic Keyword Classifier\nZero-Latency Offline Fallback"]
-        P3["③ Feature-Hash Text Embedding\n128-Dim Vector Representation"]
-        P4["④ Geospatial Duplicate Engine\n≤150m Haversine + Cosine Sim ≥ 0.50"]
-        P5["⑤ Transparent Priority Engine\n0–100 Score + Human-Readable Reasons"]
+    subgraph Pipeline["AI Triage Pipeline (backend/src/services/pipeline.js)"]
+        P1["1. Gemini 3.5 Flash-Lite Multimodal Vision"]
+        P2["2. Deterministic Keyword Classifier Fallback"]
+        P3["3. Feature-Hash 128-Dim Text Embedding"]
+        P4["4. Geospatial Duplicate Engine (150m + Cosine Sim)"]
+        P5["5. Transparent Priority Engine (0-100 Score)"]
     end
 
-    subgraph Database["🗄️ MongoDB Atlas (2dsphere Geospatial Index)"]
+    subgraph Database["MongoDB Atlas (2dsphere Geospatial Index)"]
         M1[("Complaint")]
         M2[("StatusHistory")]
         M3[("RuleSettings")]
@@ -144,15 +144,29 @@ flowchart TD
         M5[("User")]
     end
 
-    R1 --> F1 --> B1 & B2
+    R1 --> F1
+    R2 --> F2
+    R3 --> F1
+    F1 --> B1
+    F1 --> B2
     B2 --> P1
-    P1 -->|"Online"| P3
-    P1 -->|"Offline / Fallback"| P2 --> P3
-    P3 --> P4 --> P5 --> M1 & M2
-    F4 --> B3 & B4 & B5
+    P1 -->|Online| P3
+    P1 -->|Fallback| P2
+    P2 --> P3
+    P3 --> P4
+    P4 --> P5
+    P5 --> M1
+    P5 --> M2
+    F4 --> B3
+    F4 --> B4
+    F4 --> B5
     B3 --> M1
-    B4 --> M1 & M2
-    B5 --> M3 & M4 --> M1
+    B4 --> M1
+    B4 --> M2
+    B5 --> M3
+    B5 --> M4
+    M3 --> M1
+    M4 --> M1
 ```
 
 ---
