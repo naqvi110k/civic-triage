@@ -7,6 +7,7 @@ import { PwaManager } from '@/components/pwa/PwaManager';
 import { PersonaProvider } from '@/context/PersonaContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import { Suspense } from 'react';
+import { Analytics } from '@vercel/analytics/next';
 
 const instrumentSerif = Instrument_Serif({
   weight: '400',
@@ -129,6 +130,7 @@ export default function RootLayout({
             <PwaManager />
           </PersonaProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
